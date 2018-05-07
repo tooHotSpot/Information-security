@@ -1,0 +1,8 @@
+Totally 455052511 numbers
+Created 456 files
+Time spent to count = : 423.958 
+
+Time spent to write file = : 2986.24
+Time spent totally = : 3410.2
+Physical Memory currently used: 4 MB
+Physical Memory currently used by current process: 1 MB
