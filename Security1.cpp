@@ -18,9 +18,7 @@ using namespace std;
 const long long N = 100; // 10^10 31250001
 const int SQRT = 10; // 100000
 //const int mSIZE = 312500005;
-unsigned int nprime[N]; // n/32
-vector<unsigned long long> bases(105);
-
+bool nprime[N + 5]; // n/32
 
 unsigned long long gcd(unsigned long long a, unsigned long long b) {
 	if (b == 0) {
@@ -28,10 +26,10 @@ unsigned long long gcd(unsigned long long a, unsigned long long b) {
 	}
 	return gcd(b, a%b);
 }
-
+//cout << PowMod(100, 9999999967, 9999999967) << endl; // 4355329650
 unsigned long long PowMod(unsigned long long a,
 	unsigned long  b, unsigned long long n) {
-	
+
 	//cout << "PowMod" << endl;
 	unsigned long long d = 1;
 	while (1) {
@@ -51,39 +49,36 @@ unsigned long long PowMod(unsigned long long a,
 }
 
 
-int checkIfWitness(unsigned long long a, unsigned long long n) {
-	if (gcd(a, n) == 1) {
-		int s = 0, t = n - 1;
-		while ((t & 1) == 0) {
-			s++;
-			t >>= 1;
-		}
-		unsigned long long n_minus_one = n - 1;
-		unsigned long long b = PowMod(a, t, n);
-		if (b == 1 || b == n_minus_one)
-			return 1;
-		else 
-			for (int i = 1; i < s; i++) 
-				if (PowMod(b, (1 >> i), n) == n_minus_one) 
-					return 1;
-	}
-	return 0;
-}
+//int checkIfWitness(unsigned long long a, unsigned long long n) {
+//	if (gcd(a, n) == 1) {
+//		int s = 0, t = a - 1;
+//		while ((t & 1) == 0) {
+//			s++;
+//			t >>= 1;
+//		}
+//		unsigned long long n_minus_one = n - 1;
+//		unsigned long long b = PowMod(a, t, n);
+//		if (b == 1 || b == n_minus_one)
+//			return 1;
+//		else
+//			for (int i = 1; i < s; i++)
+//				if (PowMod(b, (1 >> i), n) == n_minus_one)
+//					return 1;
+//	}
+//	return 0;
+//}
 
 int main()
 {
-	freopen("input.txt", "rt", stdin);
-	freopen("output.txt", "wt", stdout);
+	//freopen("input.txt", "rt", stdin);
+	//freopen("output.txt", "wt", stdout);
 
-	long long s = 0;
-	int t = 1025;
-	//cout << PowMod(100, 9999999967, 9999999967) << endl; // 4355329650
+	unsigned long long n_minus_one = 0, t = 0, b = 0;
+	int s = 0;	
 
 	clock_t start = clock();
 	double duration;
-	int a[105] = { 0 };
-	unsigned long long kSPP[10] = { 0 };
-	int kNUMS[5] = { 2, 3, 5, 7, 11 };
+	unsigned long long bases[105] = { 0 };
 
 	nprime[0] = nprime[1] = 1;
 	for (int i = 2; i <= SQRT; i++) {
@@ -97,20 +92,31 @@ int main()
 	cout << "All prime are counted, spent " << int(duration) << " minutes\n";
 	start = clock();
 
-#pragma omp parallel for reduction(+:bases)
-	for (int n = 0; n <= N; n++) {
+//#pragma omp parallel for
+	for (long long n = 0; n <= N; n++) {
+		cout << n << " is prime\n";
 		if (nprime[n] == 0) {
-			// n is prime
-			
-			for (int f = 0; f < 5; f++) {
-				if (checkIfWitness(kNUMS[f], n) == 0) {
-					if (f > 0)
-						kSPP[f] += 1;
-					break;
-				}
-			}
+			n_minus_one = n - 1;
 			for (int a = 2; a <= 100; a++) {
-				bases[a] += checkIfWitness(a, n);
+				if (gcd(a, n) == 1) {
+					s = 0;
+					t = n_minus_one;
+					while ((t & 1) == 0) {
+						s++;
+						t >>= 1;
+					}
+					b = PowMod(a, t, n);
+					if (b == 1 || b == n_minus_one)
+						bases[a] += 1;
+					else {
+						for (int i = 1; i < s; i++) {
+							if (PowMod(b, (1 >> i), n) == n_minus_one) {
+								bases[a] += 1;
+								break;
+							}
+						}
+					}
+				}
 			}
 		}
 	}
@@ -118,17 +124,23 @@ int main()
 	cout << "Main loop ended\n" << int(duration) << " minutes\n";
 	start = clock();
 
-	/*vector<pair<int, int>> results;
-	for (int i = 2; i <= 100; i++) {
-		results.push_back(make_pair(bases[i].size(), i));
-	}*/
+	cout << "Unsorted bases with values:\n";
+	vector<pair<unsigned long long, int>> h;
+	for (int a = 2; a <= 100; a++) {
+		cout << "BASE [" << a << "]: " << bases[a] << "\n";
+		h.push_back(make_pair(bases[a], a));
+	}
+	sort(h.begin(), h.end());
+	cout << "Sorted bases with values:\n";
+	for (auto a : h) {
+		cout << "BASE [" << a.second << "]: " << a.first << "\n";
+	}
 
-	sort(results.begin(), results.end());
 	cout << "BEST" << endl;
-	cout << results[0].second << " " << results[1].second << " " << results[2].second;
+	cout << h[0].second << " " << h[1].second << " " << h[2].second;
 	cout << "WORST" << endl;
-	cout << results[99].second << " " << results[98].second << " " << results[97].second;
-	
+	cout << h[95].second << " " << h[96].second << " " << h[97].second;
+
 	int wait;
 	cin >> wait;
 	return 0;
