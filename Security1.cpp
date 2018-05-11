@@ -53,7 +53,7 @@ unsigned long long PowMod(unsigned long long a,
 
 int checkIfWitness(unsigned long long a, unsigned long long n) {
 	if (gcd(a, n) == 1) {
-		int s = 0, t = a - 1;
+		int s = 0, t = n - 1;
 		while ((t & 1) == 0) {
 			s++;
 			t >>= 1;
