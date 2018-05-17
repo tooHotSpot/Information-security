@@ -1,4 +1,4 @@
-// Security.cpp: определяет точку входа консольного приложения.
+// Security.cpp: îïðåäåëÿåò òî÷êó âõîäà êîíñîëüíîãî ïðèëîæåíèÿ.
 //
 
 #include <iostream>
@@ -6,17 +6,14 @@
 #include <ctime>
 #include <vector>
 #include <algorithm>
-#include <omp.h>
+//#include <omp.h>
 
 using namespace std;
 
-//const long long N = 1000000000; // 10^9
-//const long long SQRT = 31625; // sqrt(10^9)
-//const int mSIZE = 31250005; // N/32 + 5
-
-const long long N = 1000000; 
-const int SQRT = 1000;
-const int mSIZE = 31255;
+//const long long N = 10000;     const int SQRT = 100; const int mSIZE = 315;
+//const long long N = 1000000;   const int SQRT = 1000; const int mSIZE = 31255;
+//const long long N = 100000000; const int SQRT = 10000; const int mSIZE = 3125005;
+const long long N = 1000000000; const long long SQRT = 31625; const int mSIZE = 31250005;
 
 unsigned int nprime[mSIZE];
 
@@ -58,7 +55,10 @@ unsigned long long gcd(unsigned long long a, unsigned long long b) {
 
 int main()
 {
-	freopen("output.txt", "wt", stdout);
+	int console = 0;
+	if (console != 1) {
+		freopen("output.txt", "wt", stdout);
+	}
 	cout << "**********************************************\n";
 	cout << "N = " << N << ", SQRT = " << SQRT << ", SIZE = " << mSIZE << ".\n";
 	cout << "**********************************************\n";
@@ -92,11 +92,9 @@ int main()
 	cout << "Sieve ended in " << int(duration / 60) << " minutes " << int(duration) % 60 << " seconds.\n";
 #pragma endregion
 
-	//return 0;
 	int countNumbersProcessed = 0;
-	int rk[10] = { 0 }; //int enough for 10^9
+	int rk[10] = { 0 };
 
-//#pragma omp parallel for shared(countNumbersProcessed, rk)
 	for (long long n = 3; n <= N; n += 2) {
 		long long r = nprime[n >> 5] & (1 << (n & 31));
 		if (r != 0) {
@@ -158,6 +156,10 @@ int main()
 	duration = (clock() - start) / (double)CLOCKS_PER_SEC;
 	cout << "\nEnded in " << int(duration / 60) << " minutes " << int(duration) % 60 << " seconds.\n";
 
+	if (console) {
+		cout << "Enter 1 to end: ";
+		cin >> countNumbersProcessed;
+	}
 	return 0;
 }
 
