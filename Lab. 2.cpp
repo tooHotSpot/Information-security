@@ -1,6 +1,3 @@
-// Security.cpp: îïðåäåëÿåò òî÷êó âõîäà êîíñîëüíîãî ïðèëîæåíèÿ.
-//
-
 #include <iostream>
 #include <fstream>
 #include <ctime>
