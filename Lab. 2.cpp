@@ -3,18 +3,19 @@
 #include <ctime>
 #include <vector>
 #include <algorithm>
-//#include <omp.h>
+#include <omp.h>
 
 using namespace std;
 
 //const long long N = 10000;     const int SQRT = 100; const int mSIZE = 315;
 //const long long N = 1000000;   const int SQRT = 1000; const int mSIZE = 31255;
 //const long long N = 100000000; const int SQRT = 10000; const int mSIZE = 3125005;
-const long long N = 1000000000; const long long SQRT = 31625; const int mSIZE = 31250005;
+//const long long N = 1000000000; const long long SQRT = 31625; const int mSIZE = 31250005;
+const long long N = 10000000000; const long long SQRT = 100000; const int mSIZE = 312500005;
 
 unsigned int nprime[mSIZE];
 
-//cout << PowMod(100, 9999999967, 9999999967) << endl; // 4355329650
+//cout << PowMod(100, 9999999999, 9999999999) << endl; // 4355329650
 unsigned long long PowMod(unsigned long long a,
 	unsigned long  t, unsigned long long n) {
 
@@ -42,7 +43,7 @@ unsigned long long PowMod(unsigned long long a,
 	}
 }
 
-unsigned long long gcd(unsigned long long a, unsigned long long b) {
+long long gcd(long long a, long long b) {
 	if (b == 0) {
 		return a;
 	}
@@ -53,7 +54,7 @@ unsigned long long gcd(unsigned long long a, unsigned long long b) {
 int main()
 {
 	int console = 0;
-	if (console != 1) {
+	if (console == 0) {
 		freopen("output.txt", "wt", stdout);
 	}
 	cout << "**********************************************\n";
@@ -69,7 +70,7 @@ int main()
 	clock_t start = clock();
 
 #pragma region Finding all composite odd numbers
-	for (int i = 3; i <= SQRT; i += 2) {
+	for (long long i = 3; i <= SQRT; i += 2) {
 		/*
 		i % 32 = i & 31
 		i / 32 = i >> 5
@@ -79,8 +80,8 @@ int main()
 		*/
 		long long r = nprime[i >> 5] & (1 << (i & 31));
 		if (r == 0) {
-			for (int j = i * i, t = 2 * i; j <= N; j += t) {
-				nprime[j >> 5] |= (1 << (j & 31));
+			for (long long j = i * i, t = 2 * i; j <= N; j += t) {
+				nprime[j >> 5ll] |= (1ll << (j & 31ll));
 			}
 		}
 	}
@@ -90,41 +91,42 @@ int main()
 #pragma endregion
 
 	int countNumbersProcessed = 0;
-	int rk[10] = { 0 };
-
+	long long rk[10] = { 0 };
+#pragma omp parallel for shared(rk)
 	for (long long n = 3; n <= N; n += 2) {
 		long long r = nprime[n >> 5] & (1 << (n & 31));
 		if (r != 0) {
-			int q = sqrt(n);
+			long long q = long long(sqrt(n));
 			if (q * q == n) {
 				continue;
 			}
 			//cout << "Counted " << countNumbersProcessed << "\n";
 			//cout << "Counting for " << n << "\n";
-			countNumbersProcessed++;
+			//countNumbersProcessed++;
 			
-			long long n_minus_one = n - 1;
-			int kBag = 0;
+			unsigned long long n_minus_one = n - 1;
+			int kBag = -1;
 			int A[10] = { 15, 2, 94, 11, 31, 10, 29, 22, 28, 73 };
 			for (int i = 0; i < 10; i++) {
-				int a = A[i];
+				long long a = A[i];
 				if (a >= n) {
 					break;
 				}
 				bool isWitness = 0;
-				if (gcd(a, n) == 1) {
-					unsigned long long s = 0, t = n_minus_one;
-					while ((t & 1) == 0) {
+				if (gcd(a, n) == 1ll) {
+					int s = 0;
+					unsigned long long t = n_minus_one;
+					while ((t & 1ull) == 0) {
 						s++;
 						t >>= 1;
 					}
 					unsigned long long b = PowMod(a, t, n);
-					if (b == 1 || b == n_minus_one) {
+					if (b == 1ull || b == n_minus_one) {
 						isWitness = 1;
 					}
 					else {
 						for (int f = 1; f < s; f++) { //cout << "\t\t\t s = " << i << "\n";
-							if (PowMod(b, (1 << f), n) == n_minus_one) {
+							if (PowMod(b, (1ull << f), n) == n_minus_one) {
 								isWitness = 1;
 								break;
 							}
@@ -132,15 +134,17 @@ int main()
 					}
 				}
 				if (!isWitness) {
+					if (kBag != -1) {
+						rk[kBag]++;
+					}
 					break;
 				}
 				kBag++;
 			}
-			rk[kBag]++;
 		}
 	}
 
-	cout << countNumbersProcessed << " checked for primality test in the range.\n\n";
+	//cout << countNumbersProcessed << " checked for primality test in the range.\n\n";
 	duration = (clock() - start) / (double)CLOCKS_PER_SEC;
 	cout << "Main loop ended in " << int(duration / 60) << " minutes " << int(duration) % 60 << " seconds.\n";
 	
