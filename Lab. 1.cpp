@@ -10,9 +10,11 @@
 
 using namespace std;
 
-const long long N = 10000000000; // 10^10
-const long long SQRT = 100000; // 10^5
-const int mSIZE = 312500005; // N/32
+//const long long N = 10000;     const int SQRT = 100; const int mSIZE = 315;
+const long long N = 1000000;   const int SQRT = 1000; const int mSIZE = 31255;
+//const long long N = 100000000; const int SQRT = 10000; const int mSIZE = 3125005;
+//const long long N = 1000000000; const long long SQRT = 31625; const int mSIZE = 31250005;
+//const long long N = 10000000000; const long long SQRT = 100000; const int mSIZE = 312500005;
 
 unsigned int nprime[mSIZE];
 
@@ -22,10 +24,12 @@ unsigned long long PowMod(unsigned long long a,
 
 	//cout << "\t\tPowMod" << endl;
 	unsigned long long d = 1;
+	/*
 	if (a == 1) {
 		cout << "a == 1" << endl;
 		t = 1;
 	}
+	*/
 	while (1) {
 		//cout << "\t\t# " << d << " * " << a << " ^ " << t << " mod " << n;
 		if (t == 1) {
@@ -40,7 +44,6 @@ unsigned long long PowMod(unsigned long long a,
 			a = ((a % n) * (a % n)) % n;
 			t >>= 1;
 		}
-		//cout << "\n";
 	}
 }
 
@@ -55,7 +58,7 @@ unsigned long long myBases[105] = {};
 
 int main()
 {
-	//freopen("output.txt", "wt", stdout);
+	freopen("output.txt", "wt", stdout);
 
 	/*
 	10^10 Bits
@@ -89,8 +92,7 @@ int main()
 	cout << "Sieve ended in " << int(duration / 60) << " minutes ";
 	printf("%.2f seconds.\n\n", duration);
 	unsigned long long countSquares = 0;
-  
-	for (n = 3; n <= N; n+=2) {
+	for (n = 3; n <= 1000000; n += 2) {
 		r = nprime[n >> 5] & (1 << (n & 31));
 		if (r != 0) {
 			q = sqrt(n);
@@ -107,19 +109,19 @@ int main()
 #pragma omp parallel for shared(l, n, n_minus_one, myBases)
 			for (a = 2; a <= l; a++) {
 				if (gcd(a, n) == 1) {
-					unsigned long long s = 0, t, b;
-					t = n_minus_one;
+					int s = 0;
+					unsigned long long t = n_minus_one;
 					while ((t & 1) == 0) {
 						s++;
 						t >>= 1;
 					}
-					b = PowMod(a, t, n);
-					if (b == 1 || b == n_minus_one) {
+					unsigned long long b = PowMod(a, t, n);
+					if (b == 1ull || b == n_minus_one) {
 						myBases[a] += 1; //cout << "\tInstantly: b = " << b << "\n";
 					}
 					else { //cout << "\t\tTrying 2 case" << endl;
-						for (unsigned long long f = 1; f < s; f++) { //cout << "\t\t\t s = " << i << "\n";
-							if (PowMod(b, (1 << f), n) == n_minus_one) {
+						for (int f = 1; f < s; f++) { //cout << "\t\t\t s = " << i << "\n";
+							if (PowMod(b, (1ull << f), n) == n_minus_one) {
 								myBases[a] += 1; //printf("\t\tOK: b=%lld ^(2 ^ i=%lld) mod n=%lld", b, i, n);
 								break;
 							}
@@ -139,7 +141,7 @@ int main()
 	cout << "Main loop ended in " << int(duration / 60) << " minutes ";
 	printf("%.2f seconds.\n\n", duration);
 
-	
+
 	cout << "Unsorted bases with values:\n";
 	for (a = 2; a <= 100; a++) {
 		cout << a << ": " << myBases[a] << "\n";
@@ -153,7 +155,7 @@ int main()
 	sort(h.begin(), h.end());
 	cout << "Sorted bases with values:\n";
 	for (int i = 0; i < 98; i++) {
-		cout << "BASE [" << h[i].second << "]: " << h[i].first << "\n";
+		cout << h[i].second << ": " << h[i].first << "\n";
 	}
 	cout << "\nBest bases:\n";
 	for (int i = 0; i < 3; i++) {
@@ -165,9 +167,12 @@ int main()
 	}
 
 	duration = (clock() - start) / (double)CLOCKS_PER_SEC;
-	cout << "Ended in " << int(duration / 60) << " minutes ";
-	printf("%.2f seconds.\n", duration);
+	cout << "Ended in " << int(duration / 60) << " minutes " << int(duration) % 60 << " seconds.\n";
 
+	cout << "\n10 best bases for the second part:\n";
+	for (int i = 0; i < 10; i++) {
+		cout << h[i].second << " ";
+	}
 
 	return 0;
 }
