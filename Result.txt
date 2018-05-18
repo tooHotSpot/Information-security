@@ -1,21 +1,46 @@
 **********************************************
-N = 1000000000, SQRT = 31625, SIZE = 31250005.
+N = 100000000, SQRT = 10000, SIZE = 3125005.
 **********************************************
-Sieve ended in 0 minutes 7 seconds.
-449136656 checked for primality test in the range.
-
-Main loop ended in 8 minutes 27 seconds.
+Sieve ended in 0 minutes 1 seconds.
+44233546 checked for primality test in the range.
 
 Result:
-1: 15 => 449135616
-2: 2 => 1009
-3: 94 => 30
-4: 11 => 1
+1: 15 => 398
+2: 2 => 15
+3: 94 => 0
+4: 11 => 0
 5: 31 => 0
-6: 10 => 0
-7: 29 => 0
-8: 22 => 0
-9: 28 => 0
-10: 73 => 0
 
-Ended in 8 minutes 27 seconds.
+Ended in 0 minutes 54 seconds.
+
+**********************************************
+N = 1000000000, SQRT = 31625, SIZE = 31250005.
+**********************************************
+Sieve ended in 0 minutes 23 seconds.
+435534937 checked for primality test in the range.
+
+Result:
+1: 15 => 1009
+2: 2 => 30
+3: 94 => 1
+4: 11 => 0
+5: 31 => 0
+
+Ended in 8 minutes 57 seconds.
+Ended in 4 minutes 50 seconds. [Launch with OMP]
+
+**********************************************
+N = 10000000000, SQRT = 100000, SIZE = 312500005.
+**********************************************
+Sieve ended in 3 minutes 38 seconds.
+249930194 checked for primality test in the range.
+
+Result:
+1: 15 => 1847
+2: 2 => 56
+3: 94 => 3
+4: 11 => 0
+5: 31 => 0
+
+Ended in 126 minutes 26 seconds.
+Ended in 65 minutes 42 seconds. [Launch with OMP]
