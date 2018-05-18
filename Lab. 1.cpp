@@ -1,6 +1,3 @@
-// Security.cpp: определяет точку входа консольного приложения.
-//
-
 #include <iostream>
 #include <fstream>
 #include <ctime>
