@@ -1,6 +1,3 @@
-// Security.cpp: определяет точку входа консольного приложения.
-//
-
 #include <iostream>
 #include <fstream>
 #include <ctime>
@@ -39,14 +36,11 @@ int main()
 		r = nprime[i >> 5] & (1 << (i & 31));
 		if (r == 0) {
 			t = 2 * i;
-			for (j = i * i + i; j <= N; j += t) {
-				q = sqrt(j);
-				if (q * q == j) {
-					nprime[j >> 5] |= (1 << (j & 31));
-					//cout << j << endl;
-					last = j;
-					countNumbersAmount++;
-				}
+			for (j = i * i; j <= N; j += t) {
+				nprime[j >> 5] |= (1 << (j & 31));
+				//cout << j << endl;
+				last = j;
+				countNumbersAmount++;
 			}
 		}
 	}
